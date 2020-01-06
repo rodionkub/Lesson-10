@@ -10,8 +10,9 @@
 		01C182B323BA9879006FAB21 /* StoredPost+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C182AE23BA9878006FAB21 /* StoredPost+CoreDataProperties.swift */; };
 		01C182B523BA9879006FAB21 /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C182B123BA9879006FAB21 /* PostCell.swift */; };
 		01C182B623BA9879006FAB21 /* StoredPost+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C182B223BA9879006FAB21 /* StoredPost+CoreDataClass.swift */; };
-		01C182B823BA9882006FAB21 /* Controllers in Resources */ = {isa = PBXBuildFile; fileRef = 01C182B723BA9882006FAB21 /* Controllers */; };
 		01C182BB23BA9894006FAB21 /* RequestsLesson.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 01C182B923BA9894006FAB21 /* RequestsLesson.xcdatamodeld */; };
+		01FD6F1D23C3BADC00A9F6BC /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FD6F1B23C3BADC00A9F6BC /* LoginController.swift */; };
+		01FD6F1E23C3BADC00A9F6BC /* PostsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FD6F1C23C3BADC00A9F6BC /* PostsController.swift */; };
 		7CBCE97623A3DEE000322B47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBCE97523A3DEE000322B47 /* AppDelegate.swift */; };
 		7CBCE97823A3DEE000322B47 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBCE97723A3DEE000322B47 /* SceneDelegate.swift */; };
 		7CBCE97A23A3DEE000322B47 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBCE97923A3DEE000322B47 /* ViewController.swift */; };
@@ -24,8 +25,9 @@
 		01C182AE23BA9878006FAB21 /* StoredPost+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StoredPost+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		01C182B123BA9879006FAB21 /* PostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		01C182B223BA9879006FAB21 /* StoredPost+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StoredPost+CoreDataClass.swift"; sourceTree = "<group>"; };
-		01C182B723BA9882006FAB21 /* Controllers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Controllers; sourceTree = "<group>"; };
 		01C182BA23BA9894006FAB21 /* FinalTask.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FinalTask.xcdatamodel; sourceTree = "<group>"; };
+		01FD6F1B23C3BADC00A9F6BC /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
+		01FD6F1C23C3BADC00A9F6BC /* PostsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsController.swift; sourceTree = "<group>"; };
 		7CBCE97223A3DEE000322B47 /* RequestsLesson.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RequestsLesson.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CBCE97523A3DEE000322B47 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7CBCE97723A3DEE000322B47 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -47,6 +49,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01FD6F1F23C3BB7300A9F6BC /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				01FD6F1B23C3BADC00A9F6BC /* LoginController.swift */,
+				01FD6F1C23C3BADC00A9F6BC /* PostsController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		7CBCE96923A3DEE000322B47 = {
 			isa = PBXGroup;
 			children = (
@@ -66,8 +77,8 @@
 		7CBCE97423A3DEE000322B47 /* RequestsLesson */ = {
 			isa = PBXGroup;
 			children = (
+				01FD6F1F23C3BB7300A9F6BC /* Controllers */,
 				01C182B923BA9894006FAB21 /* RequestsLesson.xcdatamodeld */,
-				01C182B723BA9882006FAB21 /* Controllers */,
 				01C182B123BA9879006FAB21 /* PostCell.swift */,
 				01C182B223BA9879006FAB21 /* StoredPost+CoreDataClass.swift */,
 				01C182AE23BA9878006FAB21 /* StoredPost+CoreDataProperties.swift */,
@@ -110,7 +121,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1120;
 				LastUpgradeCheck = 1120;
-				ORGANIZATIONNAME = "Ildar Zalyalov";
+				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					7CBCE97123A3DEE000322B47 = {
 						CreatedOnToolsVersion = 11.2.1;
@@ -142,7 +153,6 @@
 			files = (
 				7CBCE98523A3DEE200322B47 /* LaunchScreen.storyboard in Resources */,
 				7CBCE98223A3DEE200322B47 /* Assets.xcassets in Resources */,
-				01C182B823BA9882006FAB21 /* Controllers in Resources */,
 				7CBCE97D23A3DEE000322B47 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -156,7 +166,9 @@
 			files = (
 				01C182BB23BA9894006FAB21 /* RequestsLesson.xcdatamodeld in Sources */,
 				01C182B523BA9879006FAB21 /* PostCell.swift in Sources */,
+				01FD6F1E23C3BADC00A9F6BC /* PostsController.swift in Sources */,
 				7CBCE97A23A3DEE000322B47 /* ViewController.swift in Sources */,
+				01FD6F1D23C3BADC00A9F6BC /* LoginController.swift in Sources */,
 				7CBCE97623A3DEE000322B47 /* AppDelegate.swift in Sources */,
 				01C182B323BA9879006FAB21 /* StoredPost+CoreDataProperties.swift in Sources */,
 				01C182B623BA9879006FAB21 /* StoredPost+CoreDataClass.swift in Sources */,

@@ -1,6 +1,6 @@
 //
 //  LoginController.swift
-//  FinalTask
+//  RequestsLesson
 //
 //  Created by Родион Кубышкин on 28/12/2019.
 //  Copyright © 2019 Родион Кубышкин. All rights reserved.
@@ -11,6 +11,7 @@ import WebKit
 import SafariServices
 
 class LoginController: UIViewController, WKNavigationDelegate {
+    
     @IBOutlet weak var webView: WKWebView!
     static var posts: Data?
     static var user: Data?

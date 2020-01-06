@@ -42,7 +42,7 @@
         <!--Login Controller-->
         <scene sceneID="oXg-wG-6LK">
             <objects>
-                <viewController id="qHI-Cq-Qm8" customClass="LoginController" customModule="FinalTask" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="qHI-Cq-Qm8" customClass="LoginController" customModule="RequestsLesson" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rf1-DQ-hdm">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -62,7 +62,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="elM-u2-mbH"/>
                     <connections>
-                        <outlet property="webView" destination="Sik-hb-r8V" id="UTt-11-dgP"/>
+                        <outlet property="webView" destination="Sik-hb-r8V" id="0Y8-g6-UPn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LJD-00-Rv3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -72,7 +72,7 @@
         <!--Posts Controller-->
         <scene sceneID="loJ-az-Qfw">
             <objects>
-                <viewController storyboardIdentifier="PostsStoryboard" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Xxa-eM-E0A" customClass="PostsController" customModule="FinalTask" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PostsStoryboard" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Xxa-eM-E0A" customClass="PostsController" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="DeZ-cr-EwV"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="elz-HX-fuU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
