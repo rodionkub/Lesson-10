@@ -22,13 +22,16 @@ class LoginController: UIViewController, WKNavigationDelegate {
         webView.navigationDelegate = self
         let url = URL(string: "https://oauth.vk.com/authorize?client_id=6898636&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=offline%2Cwall&response_type=token&v=5.92")!
         let request = URLRequest(url: url)
+        print("sup bro")
         webView.load(request)
+        print("heeyyy bro")
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         let url = webView.url
         print(url!)
         if (url?.absoluteString.contains("access_token="))! {
+            print("ay bro")
             let token = url?.absoluteString.split(separator: "&")[0].split(separator: "=")[1]
             let user_id = url?.absoluteString.split(separator: "&")[2].split(separator: "=")[1]
             
@@ -44,8 +47,10 @@ class LoginController: UIViewController, WKNavigationDelegate {
             }
             task.resume()
             task2.resume()
+            print("hey bro")
             while LoginController.posts == nil {}
             while LoginController.user == nil {}
+            print("heyy bro")
 
             let layout:UICollectionViewFlowLayout = UICollectionViewFlowLayout.init()
             let collectionView:PostsController = PostsController.init(collectionViewLayout:layout)

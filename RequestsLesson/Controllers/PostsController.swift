@@ -84,83 +84,114 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
             print(jsonErr)
         }
         
-        
-        for i in (0..<10) {
-            
-            let postCell = PostCell()
-            let first_name = (parsedUser?.response![0].first_name!)!
-            let last_name = (parsedUser?.response![0].last_name!)!
-            let name = "\(first_name) \(last_name)"
-                        
-            let date = getFormattedDate(i: i, parsedData: parsedData)
-            let attributedText = NSMutableAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 14)])
-            attributedText.append(NSAttributedString(string: "\n" + date, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12), NSAttributedString.Key.foregroundColor: UIColor.init(white: 0.65, alpha: 1)]))
-            postCell.nameLabel.attributedText = attributedText
-                        
-            let text = parsedData?.response?.items![i].text
-            postCell.postTextView.text = text
-                        
-            let commentCount = parsedData?.response?.items![i].comments?.count
-            let likeCount = parsedData?.response?.items![i].likes?.count
-            postCell.commentCount.text = String(commentCount!)
-            postCell.likeCount.text = String(likeCount!)
-                    
-            let photoURL = URL(string: (parsedUser?.response![0].photo_50!)!)
-            postCell.avatarImageView.load(url: photoURL!)
-                        
-            let item = parsedData?.response?.items![i]
-            var url = ""
-            if item?.attachments != nil {
-                if item?.attachments![0] != nil {
-                    if item?.attachments![0].photo != nil {
-                        url = (item?.attachments![0].photo?.sizes?.last?.url!)!
-                    }
-                }
-            }
-            if url != "" {
-                postCell.postImageView.load(url: URL(string: url)!)
-            }
-            else {
-                postCell.postImageView.image = nil
-            }
-            
-            cells.append(postCell)
-        }
-        
-        
-        
-        for i in (0..<10) {
-            let post = StoredPost(context: AppDelegate.context)
-            let text = parsedData?.response?.items![i].text
-            let commentCount = parsedData?.response?.items![i].comments?.count
-            let likeCount = parsedData?.response?.items![i].likes?.count
-            var url = ""
-            if parsedData?.response?.items![i].attachments != nil {
-                if parsedData?.response?.items![i].attachments![0] != nil {
-                    if parsedData?.response?.items![i].attachments![0].photo != nil {
-                        url = (parsedData?.response?.items![i].attachments![0].photo?.sizes?.last?.url!)!
-                    }
-                }
-            }
-            if url != "" {
-               DispatchQueue.global().async { [weak self] in
-                if let data = try? Data(contentsOf: URL(string: url)!) {
-                        post.image = data
-                    }
-                }
-            }
-            post.date = getFormattedDate(i: i, parsedData: parsedData)
-            post.text = text
-            post.comments = Int16(commentCount!)
-            post.likes = Int16(likeCount!)
-            AppDelegate.saveContext()
-        }
-        
         let fetchRequest: NSFetchRequest<StoredPost> = StoredPost.fetchRequest()
         do {
             let posts = try AppDelegate.context.fetch(fetchRequest)
             self.storedData = posts
         } catch {}
+        
+        print("hey bro")
+        if storedData.count == 0 {
+            print("heyy bro")
+            for i in (0..<10) {
+                
+                let postCell = PostCell()
+                let first_name = (parsedUser?.response![0].first_name!)!
+                let last_name = (parsedUser?.response![0].last_name!)!
+                let name = "\(first_name) \(last_name)"
+                            
+                let date = getFormattedDate(i: i, parsedData: parsedData)
+                let attributedText = NSMutableAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 14)])
+                attributedText.append(NSAttributedString(string: "\n" + date, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12), NSAttributedString.Key.foregroundColor: UIColor.init(white: 0.65, alpha: 1)]))
+                postCell.nameLabel.attributedText = attributedText
+                            
+                let text = parsedData?.response?.items![i].text
+                postCell.postTextView.text = text
+                print("heyyy bro")
+                let commentCount = parsedData?.response?.items![i].comments?.count
+                let likeCount = parsedData?.response?.items![i].likes?.count
+                postCell.commentCount.text = String(commentCount!)
+                postCell.likeCount.text = String(likeCount!)
+                        
+                let photoURL = URL(string: (parsedUser?.response![0].photo_50!)!)
+                postCell.avatarImageView.load(url: photoURL!)
+                            
+                let item = parsedData?.response?.items![i]
+                var url = ""
+                if item?.attachments != nil {
+                    if item?.attachments![0] != nil {
+                        if item?.attachments![0].photo != nil {
+                            url = (item?.attachments![0].photo?.sizes?.last?.url!)!
+                        }
+                    }
+                }
+                if url != "" {
+                    postCell.postImageView.load(url: URL(string: url)!)
+                }
+                else {
+                    postCell.postImageView.image = nil
+                }
+                
+                cells.append(postCell)
+            }
+        }
+        else {
+            print("heyyyy bro")
+            for i in (storedData.count-10..<storedData.count - 1) {
+                
+                let postCell = PostCell()
+                let first_name = self.storedData[i].first_name!
+                let last_name = self.storedData[i].last_name!
+                let name = "\(first_name) \(last_name)"
+                
+                postCell.postTextView.text = self.storedData[i].text
+                let attributedText = NSMutableAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 14)])
+                attributedText.append(NSAttributedString(string: "\n" + String(self.storedData[i].date!), attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12), NSAttributedString.Key.foregroundColor: UIColor.init(white: 0.65, alpha: 1)]))
+                postCell.nameLabel.attributedText = attributedText
+                postCell.avatarImageView.image = UIImage(data: self.storedData[i].avatar!)
+                postCell.commentCount.text = String(self.storedData[i].comments)
+                postCell.likeCount.text = String(self.storedData[i].likes)
+                if self.storedData[i].image != nil {
+                    postCell.postImageView.image = UIImage(data: self.storedData[i].image!)
+                }
+                
+                cells.append(postCell)
+            }
+        }
+        
+        
+        DispatchQueue.global().async {
+            for i in (0..<10) {
+                let post = StoredPost(context: AppDelegate.context)
+                let text = self.parsedData?.response?.items![i].text
+                let commentCount = self.parsedData?.response?.items![i].comments?.count
+                let likeCount = self.parsedData?.response?.items![i].likes?.count
+                var url = ""
+                if self.parsedData?.response?.items![i].attachments != nil {
+                    if self.parsedData?.response?.items![i].attachments![0] != nil {
+                        if self.parsedData?.response?.items![i].attachments![0].photo != nil {
+                            url = (self.parsedData?.response?.items![i].attachments![0].photo?.sizes?.last?.url!)!
+                        }
+                    }
+                }
+                if url != "" {
+                    if let data = try? Data(contentsOf: URL(string: url)!) {
+                        post.image = data
+                    }
+                }
+                url = (self.parsedUser?.response![0].photo_50!)!
+                if let data = try? Data(contentsOf: URL(string: url)!) {
+                    post.avatar = data
+                }
+                post.first_name = (self.parsedUser?.response![0].first_name!)!
+                post.last_name = (self.parsedUser?.response![0].last_name!)!
+                post.date = getFormattedDate(i: i, parsedData: self.parsedData)
+                post.text = text
+                post.comments = Int16(commentCount!)
+                post.likes = Int16(likeCount!)
+                AppDelegate.saveContext()
+            }
+        }
         
         collectionView?.alwaysBounceVertical = true
         

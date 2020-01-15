@@ -22,5 +22,8 @@ extension StoredPost {
     @NSManaged public var image: Data?
     @NSManaged public var likes: Int16
     @NSManaged public var comments: Int16
+    @NSManaged public var avatar: Data?
+    @NSManaged public var first_name: String?
+    @NSManaged public var last_name: String?
 
 }
