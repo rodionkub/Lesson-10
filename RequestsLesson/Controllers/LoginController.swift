@@ -32,8 +32,8 @@ class LoginController: UIViewController, WKNavigationDelegate {
             let token = url?.absoluteString.split(separator: "&")[0].split(separator: "=")[1]
             let user_id = url?.absoluteString.split(separator: "&")[2].split(separator: "=")[1]
             
-            let getPostsRequest = URL(string: "https://api.vk.com/method/wall.get?v=5.92&access_token=" + token!)
-            let getNameRequest = URL(string: "https://api.vk.com/method/users.get?user_ids=\(user_id!)v=5.92&access_token=" + token!)
+            let getPostsRequest = URL(string: "https://api.vk.com/method/wall.get?v=5.92&count=100&access_token=" + token!)
+            let getNameRequest = URL(string: "https://api.vk.com/method/users.get?user_ids=\(user_id!)&v=5.92&fields=first_name,last_name,photo_50&access_token=" + token!)
             let task = URLSession.shared.dataTask(with: getPostsRequest!) {(data, response, error) in
                 guard let data = data else { return }
                 LoginController.posts = data

@@ -41,8 +41,10 @@ class PostCell: UICollectionViewCell {
     
     let avatarImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "avatar")
         imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage()
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = imageView.bounds.width / 2
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -52,6 +54,7 @@ class PostCell: UICollectionViewCell {
         textView.text = "=) ставь ликбез если жижа =)=) ставь ликбез если жижа =)=) ставь ликбез если жижа =)=) ставь ликбез если жижа =)"
         textView.font = UIFont.systemFont(ofSize: 12)
         textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.isScrollEnabled = false
         return textView
     }()
     

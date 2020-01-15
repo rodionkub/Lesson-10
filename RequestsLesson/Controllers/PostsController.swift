@@ -15,6 +15,16 @@ struct Reply: Decodable {
     let response: Response?
 }
 
+struct NameReply: Decodable {
+    let response: [User]?
+}
+
+struct User: Decodable {
+    let first_name: String?
+    let last_name: String?
+    let photo_50: String?
+}
+
 struct Response: Decodable {
     let count: Int?
     let items: [Post]?
@@ -60,17 +70,65 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
     
     var storedData: [StoredPost] = []
     var parsedData: Reply? = nil
+    var parsedUser: NameReply? = nil
+    var cells: [PostCell] = []
      
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         do {
             let decoder = JSONDecoder()
             parsedData = try decoder.decode(Reply.self, from: LoginController.posts!)
+            parsedUser = try decoder.decode(NameReply.self, from: LoginController.user!)
         } catch let jsonErr {
             print(jsonErr)
         }
+        
+        
+        for i in (0..<10) {
+            
+            let postCell = PostCell()
+            let first_name = (parsedUser?.response![0].first_name!)!
+            let last_name = (parsedUser?.response![0].last_name!)!
+            let name = "\(first_name) \(last_name)"
+                        
+            let date = getFormattedDate(i: i, parsedData: parsedData)
+            let attributedText = NSMutableAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 14)])
+            attributedText.append(NSAttributedString(string: "\n" + date, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12), NSAttributedString.Key.foregroundColor: UIColor.init(white: 0.65, alpha: 1)]))
+            postCell.nameLabel.attributedText = attributedText
+                        
+            let text = parsedData?.response?.items![i].text
+            postCell.postTextView.text = text
+                        
+            let commentCount = parsedData?.response?.items![i].comments?.count
+            let likeCount = parsedData?.response?.items![i].likes?.count
+            postCell.commentCount.text = String(commentCount!)
+            postCell.likeCount.text = String(likeCount!)
+                    
+            let photoURL = URL(string: (parsedUser?.response![0].photo_50!)!)
+            postCell.avatarImageView.load(url: photoURL!)
+                        
+            let item = parsedData?.response?.items![i]
+            var url = ""
+            if item?.attachments != nil {
+                if item?.attachments![0] != nil {
+                    if item?.attachments![0].photo != nil {
+                        url = (item?.attachments![0].photo?.sizes?.last?.url!)!
+                    }
+                }
+            }
+            if url != "" {
+                postCell.postImageView.load(url: URL(string: url)!)
+            }
+            else {
+                postCell.postImageView.image = nil
+            }
+            
+            cells.append(postCell)
+        }
+        
+        
+        
         for i in (0..<10) {
             let post = StoredPost(context: AppDelegate.context)
             let text = parsedData?.response?.items![i].text
@@ -112,45 +170,28 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // return (parsedData?.response?.count!)! - 1
-        return 15
+        return cells.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let postCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! PostCell
-        let name = "Родион Кубышкин"
         
-//        if indexPath.item >= 10 {
+        if indexPath.item < cells.count {
             
-            let date = getFormattedDate(i: indexPath.item, parsedData: parsedData)
-            let attributedText = NSMutableAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 14)])
-            attributedText.append(NSAttributedString(string: "\n" + date, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12), NSAttributedString.Key.foregroundColor: UIColor.init(white: 0.65, alpha: 1)]))
-            postCell.nameLabel.attributedText = attributedText
+            postCell.nameLabel.attributedText = cells[indexPath.item].nameLabel.attributedText
+                        
+            postCell.postTextView.text = cells[indexPath.item].postTextView.text
+                        
+            postCell.commentCount.text = cells[indexPath.item].commentCount.text
+            postCell.likeCount.text = cells[indexPath.item].likeCount.text
+                    
+            postCell.avatarImageView.image = cells[indexPath.item].avatarImageView.image
+            postCell.avatarImageView.layer.cornerRadius = postCell.avatarImageView.bounds.height / 2
+                        
+            postCell.postImageView.image = cells[indexPath.item].postImageView.image
             
-            let text = parsedData?.response?.items![indexPath.item].text
-            postCell.postTextView.text = text
-            
-            let commentCount = parsedData?.response?.items![indexPath.item].comments?.count
-            let likeCount = parsedData?.response?.items![indexPath.item].likes?.count
-            postCell.commentCount.text = String(commentCount!)
-            postCell.likeCount.text = String(likeCount!)
-            
-            let item = parsedData?.response?.items![indexPath.item]
-            var url = ""
-            if item?.attachments != nil {
-                if item?.attachments![0] != nil {
-                    if item?.attachments![0].photo != nil {
-                        url = (item?.attachments![0].photo?.sizes?.last?.url!)!
-                    }
-                }
-            }
-            if url != "" {
-                postCell.postImageView.load(url: URL(string: url)!)
-            }
-            else {
-                postCell.postImageView.image = nil
-            }
+        }
 //    }
 //        else {
 //            postCell.postTextView.text = self.storedData[indexPath.item].text
@@ -168,15 +209,76 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
         return postCell
     }
     
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+
+        if indexPath.item == cells.count - 1 {
+            
+            let startIndex = cells.count
+            var endIndex: Int
+            
+            if startIndex + 10 > (parsedData?.response?.items!.count)! - 1 {
+                endIndex = (parsedData?.response?.items!.count)! - 1
+            }
+            else {
+                endIndex = startIndex + 10
+            }
+            
+            for i in (startIndex..<endIndex) {
+                
+                let postCell = PostCell()
+                let first_name = (parsedUser?.response![0].first_name!)!
+                let last_name = (parsedUser?.response![0].last_name!)!
+                let name = "\(first_name) \(last_name)"
+                            
+                let date = getFormattedDate(i: i, parsedData: parsedData)
+                let attributedText = NSMutableAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 14)])
+                attributedText.append(NSAttributedString(string: "\n" + date, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12), NSAttributedString.Key.foregroundColor: UIColor.init(white: 0.65, alpha: 1)]))
+                postCell.nameLabel.attributedText = attributedText
+                            
+                let text = parsedData?.response?.items![i].text
+                postCell.postTextView.text = text
+                            
+                let commentCount = parsedData?.response?.items![i].comments?.count
+                let likeCount = parsedData?.response?.items![i].likes?.count
+                postCell.commentCount.text = String(commentCount!)
+                postCell.likeCount.text = String(likeCount!)
+                        
+                let photoURL = URL(string: (parsedUser?.response![0].photo_50!)!)
+                postCell.avatarImageView.load(url: photoURL!)
+                            
+                let item = parsedData?.response?.items![i]
+                var url = ""
+                if item?.attachments != nil {
+                    if item?.attachments![0] != nil {
+                        if item?.attachments![0].photo != nil {
+                            url = (item?.attachments![0].photo?.sizes?.last?.url!)!
+                        }
+                    }
+                }
+                if url != "" {
+                    postCell.postImageView.load(url: URL(string: url)!)
+                }
+                else {
+                    postCell.postImageView.image = nil
+                }
+                
+                cells.append(postCell)
+            }
+        }
+        self.perform(#selector(loadCollectionView), with: nil, afterDelay: 1.0)
+    }
+    
+    @objc func loadCollectionView() {
+        self.collectionView.reloadData()
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width
-        var height = 120
-        print(indexPath.item)
+        var height = 100
         let item = parsedData?.response?.items![indexPath.item]
         if item?.attachments != nil {
             if item?.attachments![0] != nil {
                 if item?.attachments![0].photo != nil {
-
                     let fromWidth = (item?.attachments![0].photo?.sizes?.last?.width!)!
                     let fromHeight = (item?.attachments![0].photo?.sizes?.last?.height!)!
                     let rect = getResizingResult(fromWidth: Double(fromWidth), fromHeight: Double(fromHeight), targetWidth: 400.0, targetHeight: 400.0)
@@ -207,7 +309,12 @@ extension UIImageView {
             if let data = try? Data(contentsOf: url) {
                 if let image = UIImage(data: data) {
                     DispatchQueue.main.async {
-                        self?.image = image.resizeImage(targetSize: CGSize(width: 400, height: 400))
+                        if image.size.width == 50 {
+                            self?.layer.cornerRadius = self!.bounds.width / 2
+                            self?.image = image
+                        } else {
+                            self?.image = image.resizeImage(targetSize: CGSize(width: 400, height: 400))
+                        }
                     }
                 }
             }
