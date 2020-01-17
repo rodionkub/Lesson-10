@@ -11,61 +11,6 @@ import CoreData
 
 let cellId = "cellId"
 
-struct Reply: Decodable {
-    let response: Response?
-}
-
-struct NameReply: Decodable {
-    let response: [User]?
-}
-
-struct User: Decodable {
-    let first_name: String?
-    let last_name: String?
-    let photo_50: String?
-}
-
-struct Response: Decodable {
-    let count: Int?
-    let items: [Post]?
-}
-
-struct Post: Decodable {
-    let date: Int?
-    let text: String?
-    let comments: Comment?
-    let likes: Like?
-    let reposts: Repost?
-    let attachments: [Attachment]?
-}
-
-struct Attachment: Decodable {
-    let type: String?
-    let photo: Photo?
-}
-
-struct Photo: Decodable {
-    let sizes: [Size]?
-}
-
-struct Size: Decodable {
-    let url: String?
-    let height: Int?
-    let width: Int?
-}
-
-struct Comment: Decodable {
-    let count: Int?
-}
-
-struct Like: Decodable {
-    let count: Int?
-}
-
-struct Repost: Decodable {
-    let count: Int?
-}
-
 class PostsController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     var storedData: [StoredPost] = []
@@ -90,11 +35,8 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
             self.storedData = posts
         } catch {}
         
-        print("hey bro")
         if storedData.count == 0 {
-            print("heyy bro")
             for i in (0..<10) {
-                
                 let postCell = PostCell()
                 let first_name = (parsedUser?.response![0].first_name!)!
                 let last_name = (parsedUser?.response![0].last_name!)!
@@ -107,7 +49,7 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
                             
                 let text = parsedData?.response?.items![i].text
                 postCell.postTextView.text = text
-                print("heyyy bro")
+                
                 let commentCount = parsedData?.response?.items![i].comments?.count
                 let likeCount = parsedData?.response?.items![i].likes?.count
                 postCell.commentCount.text = String(commentCount!)
@@ -134,11 +76,8 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
                 
                 cells.append(postCell)
             }
-        }
-        else {
-            print("heyyyy bro")
+        } else {
             for i in (storedData.count-10..<storedData.count - 1) {
-                
                 let postCell = PostCell()
                 let first_name = self.storedData[i].first_name!
                 let last_name = self.storedData[i].last_name!
@@ -158,7 +97,6 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
                 cells.append(postCell)
             }
         }
-        
         
         DispatchQueue.global().async {
             for i in (0..<10) {
@@ -223,19 +161,6 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
             postCell.postImageView.image = cells[indexPath.item].postImageView.image
             
         }
-//    }
-//        else {
-//            postCell.postTextView.text = self.storedData[indexPath.item].text
-//            let attributedText = NSMutableAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 14)])
-//            attributedText.append(NSAttributedString(string: "\n" + String(self.storedData[indexPath.item].date!), attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12), NSAttributedString.Key.foregroundColor: UIColor.init(white: 0.65, alpha: 1)]))
-//            postCell.nameLabel.attributedText = attributedText
-//            postCell.commentCount.text = String(self.storedData[indexPath.item].comments)
-//            postCell.likeCount.text = String(self.storedData[indexPath.item].likes)
-//            print(self.storedData[indexPath.item].image)
-//            if self.storedData[indexPath.item].image != nil {
-//                postCell.postImageView.image = UIImage(data: self.storedData[indexPath.item].image!)
-//            }
-//        }
         
         return postCell
     }
@@ -249,13 +174,11 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
             
             if startIndex + 10 > (parsedData?.response?.items!.count)! - 1 {
                 endIndex = (parsedData?.response?.items!.count)! - 1
-            }
-            else {
+            } else {
                 endIndex = startIndex + 10
             }
             
             for i in (startIndex..<endIndex) {
-                
                 let postCell = PostCell()
                 let first_name = (parsedUser?.response![0].first_name!)!
                 let last_name = (parsedUser?.response![0].last_name!)!
@@ -304,6 +227,7 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
         let width = view.frame.width
         var height = 100
         let item = parsedData?.response?.items![indexPath.item]
@@ -330,48 +254,13 @@ class PostsController: UICollectionViewController, UICollectionViewDelegateFlowL
             postTextView.contentSize.height = 10
         }
         height += Int((Double((Int(postTextView.contentSize.height) - 31) / 14) * 1.5)) * 14 + 31
+        
         return CGSize(width: Int(width), height: height)
     }
 }
 
-extension UIImageView {
-    func load(url: URL) {
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        if image.size.width == 50 {
-                            self?.layer.cornerRadius = self!.bounds.width / 2
-                            self?.image = image
-                        } else {
-                            self?.image = image.resizeImage(targetSize: CGSize(width: 400, height: 400))
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-extension UIImage {
-  func resizeImage(targetSize: CGSize) -> UIImage {
-    let size = self.size
-    let widthRatio  = targetSize.width  / size.width
-    let heightRatio = targetSize.height / size.height
-    let newSize = widthRatio > heightRatio ?  CGSize(width: size.width * heightRatio, height: size.height * heightRatio) : CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
-    let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
-
-    UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
-    self.draw(in: rect)
-    let newImage = UIGraphicsGetImageFromCurrentImageContext()
-    UIGraphicsEndImageContext()
-
-    return newImage!
-  }
-}
-
-
 func getResizingResult(fromWidth: Double, fromHeight: Double, targetWidth: Double, targetHeight: Double) -> CGRect {
+    
     let widthRatio  = targetWidth  / fromWidth
     let heightRatio = targetHeight / fromHeight
     let newSize = widthRatio > heightRatio ?  CGSize(width: fromWidth * heightRatio, height: fromHeight * heightRatio) : CGSize(width: fromWidth * widthRatio,  height: fromHeight * widthRatio)
@@ -381,6 +270,7 @@ func getResizingResult(fromWidth: Double, fromHeight: Double, targetWidth: Doubl
 }
 
 func getFormattedDate(i: Int, parsedData: Reply?) -> String {
+    
     var formattedDate = ""
     let date = parsedData?.response?.items![i].date
     let dateDate = Date(timeIntervalSince1970: TimeInterval(date!))
